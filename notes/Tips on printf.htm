@@ -1,0 +1,100 @@
+
+<!-- saved from url=(0067)http://web.mit.edu/10.001/Web/Course_Notes/c_Notes/tips_printf.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>Tips on printf</title></head>
+<body bgcolor="white">
+<h2>Using the output function <code>printf</code></h2>
+When you are performing calculations, you usually want to report your results ("the answer") to the screen.  <b><code>printf</code></b> is a function from the standard input and output library that allows you to display messages on the computer screen, and this library is installed on every computer with a C compiler.  To make the standard input and output library available to your program, the following line must appear at the top of your program:
+<p>
+<code>#include &lt;stdio.h&gt;</code>
+</p><p>
+The general format for the <b><code>printf</code></b> function is
+</p><p>
+<code>printf</code>(<i>control string, other arguments</i>);
+</p><p>  
+When the program is executed, the <i>control string</i> will be displayed exactly as it appears in the program with two exceptions.  First, the computer will replace each <b>conversion specification</b> with a value given in the <i>other arguments</i> part of the <code>printf</code> statement.  Second, <b>escape sequences</b> will be replaced with special non-printing and hard-to-print characters.  It is important to remember that both <b>conversion specifications</b> and <b>escape sequences</b> appear <i>inside the control string!</i>
+</p><p>
+The first type of replacement, <b>conversion specifications</b>, are "fill-in the blank" style placeholders in the control string.  A conversion specification begins with a % and ends with a <b>conversion character</b>.  The kind of conversion character you choose is related to the <b>type</b> of what you would like to display on the screen.  The different conversion characters are listed in the table below.  (This table is also found in your text, <i>A Book on C</i>, page 494.)
+</p><p>
+<table>
+<tbody><tr><td><b>Conversion Character<hr></b></td><td><b>How the corresponding argument is printed<hr></b></td></tr>
+<tr><td align="center">c</td><td>as a character</td></tr>
+<tr><td align="center">d</td><td>as a decimal integer</td></tr>
+<tr><td align="center">e</td><td>as a floating point number; example 7.123000e+00</td></tr>
+<tr><td align="center">f</td><td>as a floating point number; example 7.123000</td></tr>
+<tr><td align="center">g</td><td>in the e-format or f-format, whichever is shorter</td></tr>
+<tr><td align="center">s</td><td>as a string</td></tr>
+</tbody></table>
+</p><p>
+As an example, consider the following code:
+<code></code></p><pre><code>#include &lt;stdio.h&gt;
+
+int main(void)
+{
+  int   i=97;
+  float x=3.14;
+
+  printf("My favorite numbers are %d and %f.\n",i,x);
+
+  return 0;
+}
+
+</code></pre>
+<p>
+In this example, we want to print a value of type <b>int</b> (stored in the variable <code>i</code>).  We should choose the conversion specification %d, since "d" is the conversion character for decimal integers.  The second value is type float, so we want to use the conversion specification %f, since "f" is the conversion character for floating point numbers.  After we compile and run, here is sample output from this code:
+</p><pre><code>
+My favorite numbers are 97 and 3.140000.
+</code></pre>
+<p>
+As we discussed in class, characters are "secretly" stored as integers, so what happens if we replace the above <code>printf</code> statement with the following line?
+</p><pre><code>
+printf("My favorite numbers are %c and %f.\n",i,x);
+</code></pre>
+<p>
+We have replaced the conversion character d (which displays integers) with the conversion character c (which displays characters).  Next, we compile, then run, and here's what we see:
+</p><pre><code>
+My favorite numbers are a and 3.140000.
+</code></pre>
+<p>
+Although computers are not very smart (is your favorite number the character 'a'?), they are obedient!  We asked the computer to display the character 97 on the screen, and if you check the ASCII table on page 703 of <i>A Book on C</i>, you will find that the ASCII code for the character 'a' is indeed 97.  So, the conversion character dictates <i>how <code>printf</code> interprets what is listed in the other arguments</i>.  
+</p><p>
+Check section 11.1 of <i>A Book on C</i> for more details regarding <code>printf</code> conversion characters.  Note that there is a typo in the example on pages 494 and 495. (Kelley and Pohl get 'minus one' on their next homework.  I bet you can find the error!)  This section of your book describes conversion specifications in greater depth, including <code>printf</code> capabilities like right and left justification, displaying a floating point number to a specified number of decimal places, and other topics.
+</p><p>
+The second type of replacement, <b>escape sequences</b>, are used to display non-printing and hard-to-print characters.  In general, these characters control how text is positioned on the screen, for example, <i>newlines</i> and <i>tabs</i>.  The problem with some of these characters is that when you type them in your program, it moves the cursor in your editor when what you really want to do is modify the layout of the text displayed when the program is executed.  Here is a table that contains several common <b>escape sequences</b> and the corresponding <b>special characters</b>:
+<table>
+<tbody><tr><td><b>Special Character<hr></b></td><td><b>Escape Sequence<hr></b></td></tr>
+<tr><td>alert (beep)</td><td>\a</td></tr>
+<tr><td>backslash</td><td>\\</td></tr>
+<tr><td>backspace</td><td>\b</td></tr>
+<tr><td>carriage return</td><td>\r</td></tr>
+<tr><td>double quote</td><td>\"</td></tr>
+<tr><td>formfeed</td><td>\f</td></tr>
+<tr><td>horizontal tab</td><td>\t</td></tr>
+<tr><td>newline</td><td>\n</td></tr>
+<tr><td>null character</td><td>\0</td></tr>
+<tr><td>single quote</td><td>\'</td></tr>
+<tr><td>vertical tab</td><td>\v</td></tr>
+<tr><td>question mark</td><td>\?</td></tr>
+
+</tbody></table>
+</p><p>
+Adding the escape sequences to the control string will lead to a different result.  Consider the original code with a different control string in the <code>printf</code> statement:
+</p><pre><code>
+printf("My\tfavorite\nnumbers are \t%d and \t%f.\n",i,x);
+</code></pre>
+The fact that the escape sequences and some of the words in the control string are joined together (like <code>\t</code> and the word <code>favorite</code>) may look awkward, but this produces the same text with added horizontal tabs and newlines:
+<pre><code>
+My      favorite
+numbers are     2 and   3.140000.
+</code></pre>
+There are additional examples in <i>A Book on C</i> on pages 6-9, 18-21, and 493-498.
+<hr>
+<font size="-1"><i>
+last modified: 
+<script language="JavaScript">
+<!--
+document.write(document.lastModified);
+//-->
+</script>12/10/1999 09:11:22
+</i></font>
+
+</body></html>
